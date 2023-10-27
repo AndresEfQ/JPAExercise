@@ -1,11 +1,20 @@
 package persistence;
 
 import entities.Author;
+import interfaces.APDao;
 
 import java.util.List;
 
-public class AuthorDAO extends DAO<Author> {
+public class AuthorDAO extends DAO<Author> implements APDao<Author> {
 
+    public void testMethod() {
+        connect();
+        System.out.println("delegate: " + em.getDelegate());
+        System.out.println("criteria builder: " + em.getCriteriaBuilder());
+        System.out.println("metamodel: " + em.getMetamodel());
+        System.out.println("delegate: " + em.getClass());
+        disconnect();
+    }
     @Override
     public void save(Author author) throws Exception {
         super.save(author);
@@ -18,6 +27,7 @@ public class AuthorDAO extends DAO<Author> {
         return author;
     }
 
+    @Override
     public Author findByName(String name) throws Exception {
         connect();
         Author author = (Author) em.createQuery("SELECT a FROM Author a WHERE a.name LIKE :name")

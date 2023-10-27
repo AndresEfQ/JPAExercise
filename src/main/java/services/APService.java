@@ -1,51 +1,45 @@
 package services;
 
-import entities.Author;
+import interfaces.APDao;
+import interfaces.APObject;
 import jakarta.persistence.NoResultException;
-import persistence.AuthorDAO;
 import utils.Utils;
 
 import java.util.List;
 import java.util.Scanner;
 
-public class AuthorService {
+public class APService<T extends APObject> {
 
-    private BookService bookService;
-    private PublisherService publisherService;
-    private final AuthorDAO DAO;
+    private final APDao<T> DAO;
+    private final APObject object;
     private final Scanner sc;
 
-    public AuthorService() {
-        this.DAO = new AuthorDAO();
+    public APService(APDao<T> dao, APObject object) {
+        this.DAO = dao;
+        this.object = object;
         this.sc = new Scanner(System.in);
     }
 
-    public void setServices(BookService bookService, PublisherService publisherService) {
-        this.bookService = bookService;
-        this.publisherService = publisherService;
-    }
-
-    public void createAuthor() {
+    public void create() {
         try {
-            System.out.println("Please enter the Author's name");
+            System.out.println("Please enter the " + object.getClass().getSimpleName() + "'s name");
             String name = sc.nextLine();
             Utils.checkEmptyString(name);
-            Author author = new Author();
-            author.setName(name);
-            DAO.save(author);
+            object.setName(name);
+            DAO.save((T) object);
         } catch (Exception e) {
             System.out.println(e.getMessage());
             e.getStackTrace();
         }
     }
 
-    public void printAllAuthors() {
+    public void printAll() {
         try {
-            List<Author> authors = DAO.findAll();
-            System.out.println("Here's the list of Authors");
+            List<T> entities = DAO.findAll();
+            System.out.println("Here's the list of " + object.getClass().getSimpleName() + "s");
             int counter = 1;
-            for (Author author : authors) {
-                System.out.println(counter + ". " + author);
+            for (T DBObject : entities) {
+                System.out.println(counter + ". " + DBObject);
                 counter++;
                 if (counter > 100) {
                     System.out.println("...");
@@ -57,27 +51,26 @@ public class AuthorService {
         }
     }
 
-    public Author searchByName() throws Exception {
+    public T searchByName() throws Exception {
         try {
-            System.out.println("Please enter the Author's name");
+            System.out.println("Please enter the " + object.getClass().getSimpleName() + "'s name");
             String name = sc.nextLine();
             Utils.checkEmptyString(name);
             return DAO.findByName(name);
         } catch (NoResultException e) {
             return null;
         }
-
     }
 
-    public void modifyAuthor() {
+    public void modify() {
         try {
             int op;
             do {
-                System.out.println("Please choose the Author you want to modify");
-                Author author = searchByName();
-                if (author != null) {
+                System.out.println("Please choose the " + object.getClass().getSimpleName() + " you want to modify");
+                T DBObject = searchByName();
+                if (DBObject != null) {
                     System.out.println("You selected:");
-                    System.out.println(author);
+                    System.out.println(DBObject);
                     System.out.println("Do you want to modify it?");
                     System.out.println("1. Yes");
                     System.out.println("2. No");
@@ -94,17 +87,17 @@ public class AuthorService {
                         String name = sc.nextLine();
                         Utils.checkEmptyString(name);
 
-                        List<Author> authors = DAO.findAll();
-                        List<String> authorNames = authors.stream().map(Author::getName).toList();
-                        Utils.checkRepeatedValue(authorNames, name);
+                        List<T> DBObjects = DAO.findAll();
+                        List<String> DBObjectNames = DBObjects.stream().map(T::getName).toList();
+                        Utils.checkRepeatedValue(DBObjectNames, name);
 
-                        author.setName(name);
-                        DAO.edit(author);
+                        object.setName(name);
+                        DAO.edit((T) object);
                         return;
                     }
                 } else {
-                    System.out.println("The Author isn't present in the database");
-                    System.out.println("Do you want to modify a different Author?");
+                    System.out.println("The " + object.getClass().getSimpleName() + " isn't present in the database");
+                    System.out.println("Do you want to modify a different " + object.getClass().getSimpleName() + "?");
                     System.out.println("1. Yes");
                     System.out.println("2. No");
                     System.out.println("0. Cancel");
@@ -130,9 +123,10 @@ public class AuthorService {
         try {
             int op;
             do {
-                Author author = searchByName();
-                if (author != null) {
-                    System.out.println("You selected " + author);
+                T DBObject = searchByName();
+                if (DBObject != null) {
+                    System.out.println("You selected:");
+                    System.out.println(DBObject);
                     System.out.println("Do you want to delete it?");
                     System.out.println("1. Yes");
                     System.out.println("2. No");
@@ -146,11 +140,11 @@ public class AuthorService {
 
                     if (op == 1) {
 
-                        DAO.edit(author);
+                        DAO.edit(DBObject);
                     }
                 } else {
-                    System.out.println("The Author isn't present in the database");
-                    System.out.println("Do you want to delete a different Author?");
+                    System.out.println("The " + object.getClass().getSimpleName() + " isn't present in the database");
+                    System.out.println("Do you want to delete a different " + object.getClass().getSimpleName() + "?");
                     System.out.println("1. Yes");
                     System.out.println("2. No");
                     System.out.println("0. Cancel");

@@ -1,10 +1,11 @@
 package persistence;
 
 import entities.Publisher;
+import interfaces.APDao;
 
 import java.util.List;
 
-public class PublisherDAO extends DAO<Publisher>{
+public class PublisherDAO extends DAO<Publisher> implements APDao<Publisher> {
 
     @Override
     public void save(Publisher publisher) throws Exception {

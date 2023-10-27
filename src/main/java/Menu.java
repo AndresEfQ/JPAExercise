@@ -1,15 +1,18 @@
-import services.AuthorService;
+import entities.Publisher;
+import persistence.AuthorDAO;
+import persistence.PublisherDAO;
+import services.APService;
 import services.BookService;
 import services.PublisherService;
+import entities.Author;
 
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class Menu {
-
-    private static final AuthorService authorService = new AuthorService();
+    private static final APService<Author> authorService = new APService<>(new AuthorDAO(), new Author());
+    private static final APService<Publisher> publisherService = new APService<>(new PublisherDAO(), new Publisher());
     private static final BookService bookService = new BookService();
-    private static final PublisherService publisherService = new PublisherService();
     private static final Scanner sc = new Scanner(System.in);
 
     private static void printMenu() {
@@ -106,14 +109,16 @@ public class Menu {
 
             switch (op) {
                 case 1 -> {
-                    authorService.createAuthor();
+                    authorService.create();
                     System.out.println();
-                    System.out.println("You're back in the Author's Menu, select 6 to print the options");
+                    System.out.println("You're back in the Author's Menu");
+                    System.out.println("Please choose an option or select 6 to print the menu");
                 }
                 case 2 -> {
-                    authorService.printAllAuthors();
+                    authorService.printAll();
                     System.out.println();
-                    System.out.println("You're back in the Author's Menu, select 6 to print the options");
+                    System.out.println("You're back in the Author's Menu");
+                    System.out.println("Please choose an option or select 6 to print the menu");
                 }
                 case 3 -> {
                     try {
@@ -123,17 +128,20 @@ public class Menu {
                         e.getStackTrace();
                     }
                     System.out.println();
-                    System.out.println("You're back in the Author's Menu, select 6 to print the options");
+                    System.out.println("You're back in the Author's Menu");
+                    System.out.println("Please choose an option or select 6 to print the menu");
                 }
                 case 4 -> {
-                    authorService.modifyAuthor();
+                    authorService.modify();
                     System.out.println();
-                    System.out.println("You're back in the Author's Menu, select 6 to print the options");
+                    System.out.println("You're back in the Author's Menu");
+                    System.out.println("Please choose an option or select 6 to print the menu");
                 }
                 case 5 -> {
                     authorService.deleteByName();
                     System.out.println();
-                    System.out.println("You're back in the Author's Menu, select 6 to print the options");
+                    System.out.println("You're back in the Author's Menu");
+                    System.out.println("Please choose an option or select 6 to print the menu");
                 }
                 case 6 -> printAuthorMenu();
                 case 0 -> printMenu();
@@ -143,7 +151,60 @@ public class Menu {
     }
 
     private static void runPublisherMenu() {
+        printPublisherMenu();
+        int op;
+        do {
+            try {
+                op = Integer.parseInt(sc.nextLine());
+                if (op < 0 || op > 6) {
+                    throw new IllegalArgumentException("Option must be between 0 and 6");
+                }
+            } catch (IllegalArgumentException | InputMismatchException e) {
+                op = -1;
+                System.out.println(e.getMessage());
+                e.getStackTrace();
+            }
 
+            switch (op) {
+                case 1 -> {
+                    publisherService.create();
+                    System.out.println();
+                    System.out.println("You're back in the Publisher's Menu");
+                    System.out.println("Please choose an option or select 6 to print the menu");
+                }
+                case 2 -> {
+                    publisherService.printAll();
+                    System.out.println();
+                    System.out.println("You're back in the Publisher's Menu");
+                    System.out.println("Please choose an option or select 6 to print the menu");
+                }
+                case 3 -> {
+                    try {
+                        System.out.println(publisherService.searchByName());
+                    } catch (Exception e) {
+                        System.out.println(e.getMessage());
+                        e.getStackTrace();
+                    }
+                    System.out.println();
+                    System.out.println("You're back in the Publisher's Menu");
+                    System.out.println("Please choose an option or select 6 to print the menu");
+                }
+                case 4 -> {
+                    publisherService.modify();
+                    System.out.println();
+                    System.out.println("You're back in the Publisher's Menu");
+                    System.out.println("Please choose an option or select 6 to print the menu");
+                }
+                case 5 -> {
+                    publisherService.deleteByName();
+                    System.out.println();
+                    System.out.println("You're back in the Publisher's Menu");
+                    System.out.println("Please choose an option or select 6 to print the menu");
+                }
+                case 6 -> printPublisherMenu();
+                case 0 -> printMenu();
+            }
+        } while (op != 0);
     }
 
     private static void runBookMenu() {

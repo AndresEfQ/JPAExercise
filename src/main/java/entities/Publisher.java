@@ -1,10 +1,11 @@
 package entities;
 
+import interfaces.APObject;
 import jakarta.persistence.*;
 
 @Entity(name = "Publisher")
 @Table(name = "publisher")
-public class Publisher {
+public class Publisher implements APObject {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
