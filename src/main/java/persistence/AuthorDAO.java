@@ -2,6 +2,7 @@ package persistence;
 
 import entities.Author;
 import interfaces.APDao;
+import jakarta.persistence.NoResultException;
 
 import java.util.List;
 
@@ -24,6 +25,9 @@ public class AuthorDAO extends DAO<Author> implements APDao<Author> {
         connect();
         Author author = em.find(Author.class, id);
         disconnect();
+        if (!author.getActive()) {
+            throw new NoResultException("The author is not active");
+        }
         return author;
     }
 
@@ -33,6 +37,9 @@ public class AuthorDAO extends DAO<Author> implements APDao<Author> {
         Author author = (Author) em.createQuery("SELECT a FROM Author a WHERE a.name LIKE :name")
                 .setParameter("name", name).getSingleResult();
         disconnect();
+        if (!author.getActive()) {
+            throw new NoResultException("The author is not active");
+        }
         return author;
     }
 
@@ -40,7 +47,7 @@ public class AuthorDAO extends DAO<Author> implements APDao<Author> {
         connect();
         List<Author> authors = em.createQuery("SELECT a FROM Author a", Author.class).getResultList();
         disconnect();
-        return authors;
+        return authors.stream().filter(Author::getActive).toList();
     }
 
     @Override

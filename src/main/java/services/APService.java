@@ -39,7 +39,7 @@ public class APService<T extends APObject> {
             System.out.println("Here's the list of " + object.getClass().getSimpleName() + "s");
             int counter = 1;
             for (T DBObject : entities) {
-                System.out.println(counter + ". " + DBObject);
+                System.out.println(DBObject);
                 counter++;
                 if (counter > 100) {
                     System.out.println("...");
@@ -52,14 +52,10 @@ public class APService<T extends APObject> {
     }
 
     public T searchByName() throws Exception {
-        try {
-            System.out.println("Please enter the " + object.getClass().getSimpleName() + "'s name");
-            String name = sc.nextLine();
-            Utils.checkEmptyString(name);
-            return DAO.findByName(name);
-        } catch (NoResultException e) {
-            return null;
-        }
+        System.out.println("Please enter the " + object.getClass().getSimpleName() + "'s name");
+        String name = sc.nextLine();
+        Utils.checkEmptyString(name);
+        return DAO.findByName(name);
     }
 
     public void modify() {
@@ -139,7 +135,7 @@ public class APService<T extends APObject> {
                     } while (op < 0 || op > 2);
 
                     if (op == 1) {
-
+                        DBObject.setActive(false);
                         DAO.edit(DBObject);
                     }
                 } else {

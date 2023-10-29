@@ -26,17 +26,16 @@ public class Book {
         this.isActive = true;
     }
 
-    public Book(Integer id, Long isbn, String title, Integer year, Integer instances, Integer lendInstances, Integer leftInstances, Author author, Publisher publisher) {
-        this.id = id;
+    public Book(Long isbn, String title, Integer year, Integer instances, Author author, Publisher publisher) {
         this.isbn = isbn;
         this.title = title;
         this.year = year;
         this.instances = instances;
-        this.lendInstances = lendInstances;
-        this.leftInstances = leftInstances;
+        this.lendInstances = 0;
+        this.leftInstances = instances;
         this.isActive = true;
-        //this.author = author;
-        //this.publisher = publisher;
+        this.author = author;
+        this.publisher = publisher;
     }
 
     public Integer getId() {
@@ -102,7 +101,7 @@ public class Book {
     public void setActive(Boolean active) {
         isActive = active;
     }
-/*
+
     public Author getAuthor() {
         return author;
     }
@@ -119,5 +118,19 @@ public class Book {
         this.publisher = publisher;
     }
 
- */
+    @Override
+    public String toString() {
+        return "{ " +
+                "id=" + id +
+                ", isbn=" + isbn +
+                ", title='" + title + '\'' +
+                ", year=" + year +
+                ", instances=" + instances +
+                ", lendInstances=" + lendInstances +
+                ", leftInstances=" + leftInstances +
+                ", isActive=" + isActive +
+                ", author=" + author.getName() +
+                ", publisher=" + publisher.getName() +
+                " }";
+    }
 }

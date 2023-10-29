@@ -18,12 +18,12 @@ public class BookDAO extends DAO<Book> {
         return book;
     }
 
-    public Book findByParameter(String parameter, String value) throws Exception {
+    public List<Book> findByParameter(String parameter, String value) throws Exception {
         String query = "SELECT b FROM Book b WHERE b." + parameter + " LIKE :parameter";
         connect();
-        Book book = em.createQuery(query, Book.class).setParameter("parameter", value).getSingleResult();
+        List<Book> books = em.createQuery(query, Book.class).setParameter("parameter", value).getResultList();
         disconnect();
-        return book;
+        return books;
     }
 
     public List<Book> findAll() throws Exception {

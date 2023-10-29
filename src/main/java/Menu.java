@@ -1,4 +1,5 @@
 import entities.Publisher;
+import jakarta.persistence.NoResultException;
 import persistence.AuthorDAO;
 import persistence.PublisherDAO;
 import services.APService;
@@ -123,6 +124,8 @@ public class Menu {
                 case 3 -> {
                     try {
                         System.out.println(authorService.searchByName());
+                    } catch (NoResultException e) {
+                        System.out.println("The Author is not present in the database");
                     } catch (Exception e) {
                         System.out.println(e.getMessage());
                         e.getStackTrace();
@@ -181,6 +184,8 @@ public class Menu {
                 case 3 -> {
                     try {
                         System.out.println(publisherService.searchByName());
+                    } catch (NoResultException e) {
+                        System.out.println("The Publisher is not present in the database");
                     } catch (Exception e) {
                         System.out.println(e.getMessage());
                         e.getStackTrace();
@@ -208,6 +213,7 @@ public class Menu {
     }
 
     private static void runBookMenu() {
+
 
     }
 }
