@@ -14,33 +14,47 @@ public class PublisherDAO extends DAO<Publisher> implements APDao<Publisher> {
     }
 
     public Publisher findById(Integer id) throws Exception {
-        connect();
-        Publisher publisher = em.find(Publisher.class, id);
-        disconnect();
-        if (!publisher.getActive()) {
-            throw new NoResultException("The publisher is not active");
+        try {
+            connect();
+            Publisher publisher = em.find(Publisher.class, id);
+            disconnect();
+            if (!publisher.getActive()) {
+                throw new NoResultException("The publisher is not active");
+            }
+            return publisher;
+        } catch (NoResultException e) {
+            System.out.println("Couldn't find any Publisher with the given id");
+            throw e;
         }
-        return publisher;
     }
 
     public Publisher findByName(String name) {
-        connect();
-        Publisher publisher = (Publisher) em.createQuery("SLECT p FROM Publiser p WHERE p.name LIKE :name")
-                .setParameter("name", name).getSingleResult();
-        disconnect();
-        if (!publisher.getActive()) {
-            throw new NoResultException("The publisher is not active");
+        try {
+            connect();
+            Publisher publisher = (Publisher) em.createQuery("SELECT p FROM Publisher p WHERE p.name LIKE :name")
+                    .setParameter("name", name).getSingleResult();
+            disconnect();
+            if (!publisher.getActive()) {
+                throw new NoResultException("The publisher is not active");
+            }
+            return publisher;
+        } catch (NoResultException e) {
+            System.out.println("Couldn't find any Publisher with the given name, please create it from the Publisher menu");
+            throw e;
         }
-        return publisher;
     }
 
     public List<Publisher> findAll() {
-        connect();
-        List<Publisher> publishers = em.createQuery("SELECT p FROM Publisher p", Publisher.class).getResultList();
-        disconnect();
-        return publishers.stream().filter((Publisher::getActive)).toList();
+        try {
+            connect();
+            List<Publisher> publishers = em.createQuery("SELECT p FROM Publisher p", Publisher.class).getResultList();
+            disconnect();
+            return publishers.stream().filter((Publisher::getActive)).toList();
+        } catch (NoResultException e) {
+            System.out.println("Couldn't find any Publishers, please create them in the Publisher menu");
+            throw e;
+        }
     }
-
 
     @Override
     public void delete(Publisher publisher) throws Exception {

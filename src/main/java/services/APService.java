@@ -60,25 +60,23 @@ public class APService<T extends APObject> {
 
     public void modify() {
         try {
-            int op;
             do {
                 System.out.println("Please choose the " + object.getClass().getSimpleName() + " you want to modify");
                 T DBObject = searchByName();
                 if (DBObject != null) {
                     System.out.println("You selected:");
                     System.out.println(DBObject);
-                    System.out.println("Do you want to modify it?");
-                    System.out.println("1. Yes");
-                    System.out.println("2. No");
-                    System.out.println("0. Cancel");
-                    do {
-                        op = Integer.parseInt(sc.nextLine());
-                        if (op < 0 || op > 2) {
-                            System.out.println("Invalid option, please choose 1, 2 or 0");
-                        }
-                    } while (op < 0 || op > 2);
+                    System.out.println("Do you want to modify it? (Y/n)");
 
-                    if (op == 1) {
+                    char confirm;
+                    String confirmString = sc.nextLine();
+                    if (confirmString.isEmpty()) {
+                        confirm = 'y';
+                    } else {
+                        confirm = confirmString.charAt(0);
+                    }
+
+                    if (confirm == 'y') {
                         System.out.println("Please choose a new name");
                         String name = sc.nextLine();
                         Utils.checkEmptyString(name);
@@ -93,22 +91,20 @@ public class APService<T extends APObject> {
                     }
                 } else {
                     System.out.println("The " + object.getClass().getSimpleName() + " isn't present in the database");
-                    System.out.println("Do you want to modify a different " + object.getClass().getSimpleName() + "?");
-                    System.out.println("1. Yes");
-                    System.out.println("2. No");
-                    System.out.println("0. Cancel");
-                    do {
-                        op = Integer.parseInt(sc.nextLine());
-                        if (op < 0 || op > 2) {
-                            System.out.println("Invalid option, please choose 1, 2 or 0");
-                        }
-                    } while (op < 0 || op > 2);
-                    if (op == 2) {
-                        op = 0;
+                    System.out.println("Do you want to modify a different " + object.getClass().getSimpleName() + "? (y/N)");
+
+                    String confirmString = sc.nextLine();
+                    char confirm;
+                    if (confirmString.isEmpty()) {
+                        confirm = 'n';
+                    } else {
+                        confirm = confirmString.charAt(0);
+                    }
+                    if (confirm == 'n') {
+                        return;
                     }
                 }
-            } while (op != 0);
-
+            } while (true);
         } catch (Exception e) {
             System.out.println(e.getMessage());
             e.getStackTrace();
@@ -137,6 +133,7 @@ public class APService<T extends APObject> {
                     if (op == 1) {
                         DBObject.setActive(false);
                         DAO.edit(DBObject);
+                        op = 0;
                     }
                 } else {
                     System.out.println("The " + object.getClass().getSimpleName() + " isn't present in the database");

@@ -22,32 +22,47 @@ public class AuthorDAO extends DAO<Author> implements APDao<Author> {
     }
 
     public Author findById(Integer id) throws Exception {
-        connect();
-        Author author = em.find(Author.class, id);
-        disconnect();
-        if (!author.getActive()) {
-            throw new NoResultException("The author is not active");
+        try {
+            connect();
+            Author author = em.find(Author.class, id);
+            disconnect();
+            if (!author.getActive()) {
+                throw new NoResultException("The author is not active");
+            }
+            return author;
+        } catch (NoResultException e) {
+            System.out.println("Couldn't find any Author with the given id");
+            throw e;
         }
-        return author;
     }
 
     @Override
     public Author findByName(String name) throws Exception {
-        connect();
-        Author author = (Author) em.createQuery("SELECT a FROM Author a WHERE a.name LIKE :name")
-                .setParameter("name", name).getSingleResult();
-        disconnect();
-        if (!author.getActive()) {
-            throw new NoResultException("The author is not active");
+        try {
+            connect();
+            Author author = (Author) em.createQuery("SELECT a FROM Author a WHERE a.name LIKE :name")
+                    .setParameter("name", name).getSingleResult();
+            disconnect();
+            if (!author.getActive()) {
+                throw new NoResultException("The author is not active");
+            }
+            return author;
+        } catch (NoResultException e) {
+            System.out.println("The Author is not present in the database, please create it in the Author menu");
+            throw e;
         }
-        return author;
     }
 
     public List<Author> findAll() throws Exception {
-        connect();
-        List<Author> authors = em.createQuery("SELECT a FROM Author a", Author.class).getResultList();
-        disconnect();
-        return authors.stream().filter(Author::getActive).toList();
+        try {
+            connect();
+            List<Author> authors = em.createQuery("SELECT a FROM Author a", Author.class).getResultList();
+            disconnect();
+            return authors.stream().filter(Author::getActive).toList();
+        } catch (NoResultException e) {
+            System.out.println("Couldn't find any Authors, please create them in the Author menu");
+            throw e;
+        }
     }
 
     @Override

@@ -54,7 +54,7 @@ public class Menu {
         System.out.println("0. Go back");
     }
 
-    private static void printABookMenu() {
+    private static void printBookMenu() {
         System.out.println();
         System.out.println("You have chosen Book, please select an option");
         System.out.println();
@@ -124,8 +124,7 @@ public class Menu {
                 case 3 -> {
                     try {
                         System.out.println(authorService.searchByName());
-                    } catch (NoResultException e) {
-                        System.out.println("The Author is not present in the database");
+                    } catch (NoResultException ignored) {
                     } catch (Exception e) {
                         System.out.println(e.getMessage());
                         e.getStackTrace();
@@ -184,8 +183,7 @@ public class Menu {
                 case 3 -> {
                     try {
                         System.out.println(publisherService.searchByName());
-                    } catch (NoResultException e) {
-                        System.out.println("The Publisher is not present in the database");
+                    } catch (NoResultException ignored) {
                     } catch (Exception e) {
                         System.out.println(e.getMessage());
                         e.getStackTrace();
@@ -213,7 +211,60 @@ public class Menu {
     }
 
     private static void runBookMenu() {
+        printBookMenu();
+        int op;
+        do {
+            try {
+                op = Integer.parseInt(sc.nextLine());
+                if (op < 0 || op > 6) {
+                    throw new IllegalArgumentException("Option must be between 0 and 6");
+                }
+            } catch (IllegalArgumentException | InputMismatchException e) {
+                op = -1;
+                System.out.println(e.getMessage());
+                e.getStackTrace();
+            }
 
-
+            switch (op) {
+                case 1 -> {
+                    bookService.createBook();
+                    System.out.println();
+                    System.out.println("You're back in the Book's Menu");
+                    System.out.println("Please choose an option or select 6 to print the menu");
+                }
+                case 2 -> {
+                    bookService.printAllBooks();
+                    System.out.println();
+                    System.out.println("You're back in the Book's Menu");
+                    System.out.println("Please choose an option or select 6 to print the menu");
+                }
+                case 3 -> {
+                    try {
+                        System.out.println(bookService.findByParameter());
+                    } catch (NoResultException ignored) {
+                    } catch (Exception e) {
+                        System.out.println(e.getMessage());
+                        e.getStackTrace();
+                    }
+                    System.out.println();
+                    System.out.println("You're back in the Book's Menu");
+                    System.out.println("Please choose an option or select 6 to print the menu");
+                }
+                case 4 -> {
+                    bookService.modifyBook();
+                    System.out.println();
+                    System.out.println("You're back in the Book's Menu");
+                    System.out.println("Please choose an option or select 6 to print the menu");
+                }
+                case 5 -> {
+                    bookService.deleteBook();
+                    System.out.println();
+                    System.out.println("You're back in the Book's Menu");
+                    System.out.println("Please choose an option or select 6 to print the menu");
+                }
+                case 6 -> printBookMenu();
+                case 0 -> printMenu();
+            }
+        } while (op != 0);
     }
 }
