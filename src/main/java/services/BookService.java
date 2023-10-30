@@ -32,11 +32,11 @@ public class BookService {
 
             System.out.println("Please enter the Book's data");
 
-            List<String> isbns = currentBooks.stream().map((book) -> book.getIsbn().toString()).toList();
+            List<String> isbnValues = currentBooks.stream().map((book) -> book.getIsbn().toString()).toList();
             System.out.print("ISBN: ");
             String aux = sc.nextLine();
             Utils.checkEmptyString(aux);
-            Utils.checkRepeatedValue(isbns, aux);
+            Utils.checkRepeatedValue(isbnValues, aux);
             Long isbn = Long.parseLong(aux);
 
             List<String> titles = currentBooks.stream().map(Book::getTitle).toList();
@@ -85,7 +85,7 @@ public class BookService {
     }
 
     public List<Book> findByParameter() {
-        List<Book> books = null;
+        List<Book> books;
 
         System.out.println("Please choose a parameter to look for in the book");
         System.out.println();
@@ -165,7 +165,6 @@ public class BookService {
             return;
         }
         try {
-            confirm = 'n';
             do {
                 System.out.println("Please select the parameter you want to change");
                 System.out.println();
@@ -191,8 +190,8 @@ public class BookService {
 
                 switch (op) {
                     case 1 -> {
-                        List<String> isbns = currentBooks.stream().map((book) -> book.getIsbn().toString()).toList();
-                        Utils.checkRepeatedValue(isbns, newVal);
+                        List<String> isbnValues = currentBooks.stream().map((book) -> book.getIsbn().toString()).toList();
+                        Utils.checkRepeatedValue(isbnValues, newVal);
                         selectedBook.setIsbn(Long.parseLong(newVal));
                     }
                     case 2 -> {
@@ -200,9 +199,7 @@ public class BookService {
                         Utils.checkRepeatedValue(titles, newVal);
                         selectedBook.setTitle(newVal);
                     }
-                    case 3 -> {
-                        selectedBook.setYear(Integer.parseInt(newVal));
-                    }
+                    case 3 -> selectedBook.setYear(Integer.parseInt(newVal));
                     case 4 -> {
                         Author author = authorDAO.findByName(newVal);
                         selectedBook.setAuthor(author);
