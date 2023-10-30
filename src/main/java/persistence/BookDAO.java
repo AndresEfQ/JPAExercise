@@ -2,6 +2,7 @@ package persistence;
 
 import entities.Book;
 import jakarta.persistence.NoResultException;
+import jakarta.persistence.PersistenceException;
 
 import java.util.List;
 
@@ -12,7 +13,7 @@ public class BookDAO extends DAO<Book> {
         super.save(book);
     }
 
-    public Book findById(Integer id) throws Exception {
+    public Book findById(Integer id) throws PersistenceException {
         try {
             connect();
             Book book = em.find(Book.class, id);
@@ -27,20 +28,20 @@ public class BookDAO extends DAO<Book> {
         }
     }
 
-    public List<Book> findByParameter(String parameter, String value) throws Exception {
+    public List<Book> findByProperty(String property, String value) throws PersistenceException {
         try {
-            String query = "SELECT b FROM Book b WHERE b." + parameter + " LIKE :parameter";
+            String query = "SELECT b FROM Book b WHERE b." + property + " LIKE :property";
             connect();
-            List<Book> books = em.createQuery(query, Book.class).setParameter("parameter", value).getResultList();
+            List<Book> books = em.createQuery(query, Book.class).setParameter("property", value).getResultList();
             disconnect();
             return books.stream().filter(Book::getActive).toList();
         } catch (NoResultException e) {
-            System.out.println("Couldn't find any books with the given parameter");
+            System.out.println("Couldn't find any books with the given property");
             throw e;
         }
     }
 
-    public List<Book> findAll() throws Exception {
+    public List<Book> findAll() throws PersistenceException {
         try {
             connect();
             List<Book> books = em.createQuery("SELECT b FROM Book b", Book.class).getResultList();

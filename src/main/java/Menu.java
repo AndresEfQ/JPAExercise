@@ -4,10 +4,11 @@ import persistence.AuthorDAO;
 import persistence.PublisherDAO;
 import services.APService;
 import services.BookService;
-import services.PublisherService;
 import entities.Author;
+import entities.Book;
 
 import java.util.InputMismatchException;
+import java.util.List;
 import java.util.Scanner;
 
 public class Menu {
@@ -60,7 +61,7 @@ public class Menu {
         System.out.println();
         System.out.println("1. Create Book");
         System.out.println("2. Print all Books");
-        System.out.println("3. Search a Book by parameter");
+        System.out.println("3. Search a Book by property");
         System.out.println("4. Modify a Book");
         System.out.println("5. Delete a Book");
         System.out.println("6. Print the menu");
@@ -240,7 +241,8 @@ public class Menu {
                 }
                 case 3 -> {
                     try {
-                        System.out.println(bookService.findByParameter());
+                        List<Book> books = bookService.findByProperty();
+                        books.forEach(System.out::println);
                     } catch (NoResultException ignored) {
                     } catch (Exception e) {
                         System.out.println(e.getMessage());

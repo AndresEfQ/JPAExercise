@@ -3,6 +3,7 @@ package services;
 import entities.Book;
 import entities.Author;
 import entities.Publisher;
+import enums.BookProperty;
 import jakarta.persistence.NoResultException;
 import persistence.AuthorDAO;
 import persistence.BookDAO;
@@ -84,39 +85,33 @@ public class BookService {
         }
     }
 
-    public List<Book> findByParameter() {
+    public List<Book> findByProperty() {
         List<Book> books;
 
-        System.out.println("Please choose a parameter to look for in the book");
+        System.out.println("Please choose a property to look for in the book");
         System.out.println();
-        System.out.println("1. By ISBN");
-        System.out.println("2. By Title");
-        System.out.println("3. By Author");
-        System.out.println("4. By Publisher");
+        for (int i = 0; i < 5; i++) {
+            BookProperty aux = BookProperty.values()[i];
+            System.out.println(aux.getVal() + ". By " + aux.getPrettyName());
+        }
 
         int op;
         do {
             op = Integer.parseInt(sc.nextLine());
-            if (op < 1 || op > 4) {
-                System.out.println("Option must be between 1 and 4");
+            if (op < 1 || op > 5) {
+                System.out.println("Option must be between 1 and 5");
             }
-        } while (op < 1 || op > 4);
-        String param;
-        switch (op) {
-            case 1 -> param = "isbn";
-            case 2 -> param = "title";
-            case 3 -> param = "author.name";
-            case 4 -> param = "publisher.name";
-            default -> param = "";
-        }
+        } while (op < 1 || op > 5);
 
-        System.out.println("Please insert the " + param + " you want to search for");
+        BookProperty prop = BookProperty.values()[op - 1];
+
+        System.out.println("Please insert the " + prop.getPrettyName() + " you want to search for");
         String value = sc.nextLine();
 
         try {
-            books = bookDAO.findByParameter(param, value);
+            books = bookDAO.findByProperty(prop.getQueryName(), value);
             if (books.isEmpty()) {
-                throw new NoResultException("Couldn't find any book with the given parameter");
+                throw new NoResultException("Couldn't find any book with the given property");
             }
             return books;
         } catch (Exception e) {
@@ -128,7 +123,7 @@ public class BookService {
 
     public void modifyBook() {
         System.out.println("Please choose the book you want to modify");
-        List<Book> books = findByParameter();
+        List<Book> books = findByProperty();
         if (books == null) {
             return;
         }
@@ -166,7 +161,7 @@ public class BookService {
         }
         try {
             do {
-                System.out.println("Please select the parameter you want to change");
+                System.out.println("Please select the property you want to change");
                 System.out.println();
                 System.out.println("1. ISBN");
                 System.out.println("2. Title");
@@ -209,7 +204,7 @@ public class BookService {
                         selectedBook.setPublisher(publisher);
                     }
                 }
-                System.out.println("Do you want to change a different parameter? (y/N)");
+                System.out.println("Do you want to change a different property? (y/N)");
                 confirmString = sc.nextLine();
                 if (confirmString.isEmpty()) {
                     confirm = 'n';
@@ -227,7 +222,7 @@ public class BookService {
 
     public void deleteBook() {
         System.out.println("Please choose the book you want to delete");
-        List<Book> books = findByParameter();
+        List<Book> books = findByProperty();
         if (books == null) {
             return;
         }
