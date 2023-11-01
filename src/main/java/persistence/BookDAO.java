@@ -1,12 +1,13 @@
 package persistence;
 
 import entities.Book;
+import interfaces.BLCDao;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.PersistenceException;
 
 import java.util.List;
 
-public class BookDAO extends DAO<Book> {
+public class BookDAO extends DAO<Book> implements BLCDao<Book> {
 
     @Override
     public void save(Book book) throws Exception {

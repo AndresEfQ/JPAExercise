@@ -34,7 +34,7 @@
                      upon what functionality is required. In fact, "eclipselink"
                      contains the functionality of most of the other artifacts listed.
 
-                     Also three artifacts, javax.persistence, org.eclipse.persistence.asm,
+                     Also, three artifacts, javax.persistence, org.eclipse.persistence.asm,
                      and org.eclipse.persistence.antlr aren't listed at all because they
                      are defined as transitive dependencies of the JPA OSGI bundle.
                  -->

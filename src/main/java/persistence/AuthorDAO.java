@@ -8,14 +8,6 @@ import java.util.List;
 
 public class AuthorDAO extends DAO<Author> implements APDao<Author> {
 
-    public void testMethod() {
-        connect();
-        System.out.println("delegate: " + em.getDelegate());
-        System.out.println("criteria builder: " + em.getCriteriaBuilder());
-        System.out.println("metamodel: " + em.getMetamodel());
-        System.out.println("delegate: " + em.getClass());
-        disconnect();
-    }
     @Override
     public void save(Author author) throws Exception {
         super.save(author);
@@ -44,7 +36,7 @@ public class AuthorDAO extends DAO<Author> implements APDao<Author> {
                     .setParameter("name", name).getSingleResult();
             disconnect();
             if (!author.getActive()) {
-                throw new NoResultException("The author is not active");
+                throw new NoResultException("The Author is not active");
             }
             return author;
         } catch (NoResultException e) {

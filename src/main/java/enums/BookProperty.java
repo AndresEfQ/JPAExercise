@@ -1,6 +1,8 @@
 package enums;
 
-public enum BookProperty {
+import interfaces.PropertyEnum;
+
+public enum BookProperty implements PropertyEnum {
     ISBN (1, "ISBN", "isbn"),
     TITLE (2, "Title", "title"),
     YEAR (3, "Year", "year"),
